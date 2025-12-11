@@ -1,5 +1,9 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 from config.database import db, User, UserBalance
 from datetime import timedelta
@@ -29,7 +33,7 @@ def signup():
         if User.query.filter_by(email=email).first():
             return jsonify({'error': 'Email already registered'}), 409
 
-        # Create new user
+        # Create new user (normal user by default; set is_admin=True manually in DB for admins)
         new_user = User(
             username=username,
             email=email,
@@ -46,8 +50,10 @@ def signup():
         db.session.commit()
 
         # Generate access token (identity must be string)
+        # Also include is_admin flag as custom claim for the frontend
         access_token = create_access_token(
             identity=str(new_user.id),
+            additional_claims={"is_admin": new_user.is_admin},
             expires_delta=timedelta(days=7)
         )
 
@@ -64,7 +70,7 @@ def signup():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    """User login"""
+    """User login (works for both user and admin accounts)"""
     try:
         data = request.get_json()
 
@@ -84,11 +90,12 @@ def login():
             return jsonify({'error': 'Account is deactivated'}), 403
 
         # Generate access token (identity must be string)
+        # Important: also embed is_admin so frontend can route to right portal
         access_token = create_access_token(
-    identity=str(user.id),
-    expires_delta=timedelta(days=7)
-)
-
+            identity=str(user.id),
+            additional_claims={"is_admin": user.is_admin},
+            expires_delta=timedelta(days=7)
+        )
 
         return jsonify({
             'message': 'Login successful',
@@ -132,6 +139,7 @@ def update_profile():
 
         if 'full_name' in data:
             user.full_name = data['full_name']
+
         if 'email' in data:
             existing = User.query.filter_by(email=data['email']).first()
             if existing and existing.id != user_id:

@@ -31,7 +31,7 @@ const StockDetail = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const headers = { 'Authorization': `Bearer ${token}` };
+      const headers = { Authorization: `Bearer ${token}` };
 
       const requests = [
         fetch(`http://127.0.0.1:5001/api/stocks/info/${symbol}`, { headers }),
@@ -42,20 +42,23 @@ const StockDetail = () => {
       ];
 
       const [infoRes, histRes, summaryRes, indicatorsRes, sentimentRes] = await Promise.all(requests);
-      
-      const infoData = await infoRes.json();
-      const histData = await histRes.json();
-      const summaryData = await summaryRes.json();
-      const indicatorsData = await indicatorsRes.json();
-      const sentimentData = await sentimentRes.json();
 
-      setStockInfo(infoData.stock);
+      const infoData = infoRes.ok ? await infoRes.json() : {};
+      const histData = histRes.ok ? await histRes.json() : {};
+      const summaryData = summaryRes.ok ? await summaryRes.json() : null;
+      const indicatorsData = indicatorsRes.ok ? await indicatorsRes.json() : null;
+      const sentimentData = sentimentRes.ok ? await sentimentRes.json() : null;
+
+      setStockInfo(infoData.stock ?? null);
       setChartData(histData.data || []);
       setAnalysisSummary(summaryData);
       setIndicators(indicatorsData);
       setSentiment(sentimentData);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setAnalysisSummary(null);
+      setIndicators(null);
+      setSentiment(null);
     } finally {
       setLoading(false);
     }
@@ -66,9 +69,9 @@ const StockDetail = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`http://127.0.0.1:5001/api/predictions/predict/${symbol}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
-      const data = await response.json();
+      const data = response.ok ? await response.json() : null;
       setPrediction(data);
     } catch (error) {
       console.error('Error fetching prediction:', error);
@@ -104,7 +107,9 @@ const StockDetail = () => {
   const currentPrice = stockInfo?.current_price || 0;
   const previousClose = stockInfo?.previous_close || 0;
   const change = currentPrice - previousClose;
-  const changePercent = ((change / previousClose) * 100).toFixed(2);
+  const changePercent = previousClose
+    ? ((change / previousClose) * 100).toFixed(2)
+    : '0.00';
 
   return (
     <div className="min-h-screen bg-gray-900 p-6">
@@ -163,9 +168,13 @@ const StockDetail = () => {
           </div>
         </motion.div>
 
-        {/* Market Analysis Cards - NEW */}
+        {/* Market Analysis Cards */}
         {analysisSummary && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+          >
             <div className={`glass p-6 rounded-xl border ${getRegimeColor(analysisSummary.regime)}`}>
               <div className="flex items-center mb-3">
                 <Activity className="w-5 h-5 mr-2 text-gray-400" />
@@ -175,11 +184,15 @@ const StockDetail = () => {
             </div>
             <div className="glass p-6 rounded-xl border border-gray-700">
               <p className="text-xs text-gray-400 mb-2">30d Return</p>
-              <p className="text-xl font-bold text-green-400">{(analysisSummary.current_return * 100).toFixed(1)}%</p>
+              <p className="text-xl font-bold text-green-400">
+                {(analysisSummary.current_return * 100).toFixed(1)}%
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border border-gray-700">
               <p className="text-xs text-gray-400 mb-2">Volatility (30d)</p>
-              <p className="text-xl font-bold text-orange-400">{(analysisSummary.risk.volatility_30d * 100).toFixed(1)}%</p>
+              <p className="text-xl font-bold text-orange-400">
+                {(analysisSummary.risk.volatility_30d * 100).toFixed(1)}%
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border border-gray-700">
               <p className="text-xs text-gray-400 mb-2">Sharpe Ratio</p>
@@ -233,8 +246,8 @@ const StockDetail = () => {
             </ResponsiveContainer>
           </motion.div>
 
-          {/* Technical Indicators Chart - NEW */}
-          {indicators && indicators.rsi && (
+          {/* Technical Indicators Chart */}
+          {indicators?.rsi && Array.isArray(indicators.rsi) && indicators?.summary && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -256,17 +269,26 @@ const StockDetail = () => {
                 </LineChart>
               </ResponsiveContainer>
               <div className="mt-3 text-center">
-                <p className="text-sm text-gray-400">Current: <span className="font-bold text-emerald-400">{indicators.summary.rsi?.toFixed(2)}</span></p>
+                <p className="text-sm text-gray-400">
+                  Current:{' '}
+                  <span className="font-bold text-emerald-400">
+                    {indicators.summary?.rsi?.toFixed(2) ?? 'N/A'}
+                  </span>
+                </p>
               </div>
             </motion.div>
           )}
         </div>
 
-        {/* Indicators & Sentiment Row - NEW */}
+        {/* Indicators & Sentiment Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Key Indicators */}
-          {indicators && (
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="glass p-6 rounded-xl">
+          {indicators?.summary && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="glass p-6 rounded-xl"
+            >
               <h2 className="text-xl font-bold text-white mb-4 flex items-center">
                 <TrendingUpDown className="w-5 h-5 mr-2 text-purple-400" />
                 Technical Indicators
@@ -274,43 +296,82 @@ const StockDetail = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-400 mb-1">RSI (14)</p>
-                  <p className={`font-bold ${indicators.summary.rsi > 70 ? 'text-red-400' : indicators.summary.rsi < 30 ? 'text-green-400' : 'text-yellow-400'}`}>
-                    {indicators.summary.rsi?.toFixed(2)}
+                  <p
+                    className={`font-bold ${
+                      (indicators.summary.rsi ?? 50) > 70
+                        ? 'text-red-400'
+                        : (indicators.summary.rsi ?? 50) < 30
+                        ? 'text-green-400'
+                        : 'text-yellow-400'
+                    }`}
+                  >
+                    {indicators.summary.rsi?.toFixed(2) ?? 'N/A'}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-400 mb-1">MACD Signal</p>
-                  <p className={`font-bold ${indicators.summary.macd_signal === 'BUY' ? 'text-green-400' : 'text-red-400'}`}>
-                    {indicators.summary.macd_signal}
+                  <p
+                    className={`font-bold ${
+                      indicators.summary.macd_signal === 'BUY'
+                        ? 'text-green-400'
+                        : 'text-red-400'
+                    }`}
+                  >
+                    {indicators.summary.macd_signal ?? 'N/A'}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-400 mb-1">BB Position</p>
-                  <p className="font-bold text-blue-400">{indicators.summary.bb_position?.toFixed(2)}</p>
+                  <p className="font-bold text-blue-400">
+                    {indicators.summary.bb_position?.toFixed(2) ?? 'N/A'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-400 mb-1">ADX Trend</p>
-                  <p className={`font-bold ${indicators.summary.adx > 25 ? 'text-green-400' : 'text-gray-400'}`}>
-                    {indicators.summary.adx?.toFixed(1)}
+                  <p
+                    className={`font-bold ${
+                      (indicators.summary.adx ?? 0) > 25
+                        ? 'text-green-400'
+                        : 'text-gray-400'
+                    }`}
+                  >
+                    {indicators.summary.adx?.toFixed(1) ?? 'N/A'}
                   </p>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* News Sentiment - NEW */}
+          {/* News Sentiment */}
           {sentiment && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass p-6 rounded-xl">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="glass p-6 rounded-xl"
+            >
               <h2 className="text-xl font-bold text-white mb-4 flex items-center">
                 <Newspaper className="w-5 h-5 mr-2 text-orange-400" />
                 News Sentiment
               </h2>
               <div className="text-center">
-                <div className={`w-24 h-24 rounded-full mx-auto mb-4 ${getSentimentColor(sentiment.score)} border-4 border-opacity-20 flex items-center justify-center`}>
-                  <span className="text-2xl font-bold">{(sentiment.score * 100).toFixed(0)}%</span>
+                <div
+                  className={`w-24 h-24 rounded-full mx-auto mb-4 ${getSentimentColor(
+                    sentiment.score
+                  )} border-4 border-opacity-20 flex items-center justify-center`}
+                >
+                  <span className="text-2xl font-bold">
+                    {(sentiment.score * 100).toFixed(0)}%
+                  </span>
                 </div>
-                <p className="text-sm text-gray-400 mb-2">Signal: <span className="font-bold capitalize">{sentiment.signal}</span></p>
-                <p className="text-xs text-gray-500">{sentiment.articles_count} articles analyzed</p>
+                <p className="text-sm text-gray-400 mb-2">
+                  Signal:{' '}
+                  <span className="font-bold capitalize">
+                    {sentiment.signal}
+                  </span>
+                </p>
+                <p className="text-xs text-gray-500">
+                  {sentiment.articles_count} articles analyzed
+                </p>
               </div>
             </motion.div>
           )}
@@ -326,18 +387,36 @@ const StockDetail = () => {
             <h2 className="text-xl font-bold text-white mb-4">AI Prediction</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
               {prediction.predictions?.map((pred, index) => (
-                <div key={index} className={`p-4 rounded-lg text-center border ${pred.direction === 'UP' ? 'bg-green-500/20 border-green-500/30' : 'bg-red-500/20 border-red-500/30'}`}>
+                <div
+                  key={index}
+                  className={`p-4 rounded-lg text-center border ${
+                    pred.direction === 'UP'
+                      ? 'bg-green-500/20 border-green-500/30'
+                      : 'bg-red-500/20 border-red-500/30'
+                  }`}
+                >
                   <p className="text-xs text-gray-400 mb-1">{pred.date}</p>
-                  <p className="text-lg font-bold text-white">${pred.predicted_price.toFixed(2)}</p>
-                  <p className={`font-semibold ${pred.direction === 'UP' ? 'text-green-400' : 'text-red-400'}`}>
+                  <p className="text-lg font-bold text-white">
+                    ${pred.predicted_price.toFixed(2)}
+                  </p>
+                  <p
+                    className={`font-semibold ${
+                      pred.direction === 'UP'
+                        ? 'text-green-400'
+                        : 'text-red-400'
+                    }`}
+                  >
                     {pred.direction}
                   </p>
-                  <p className="text-xs text-gray-400">{pred.confidence?.toFixed(1)}%</p>
+                  <p className="text-xs text-gray-400">
+                    {pred.confidence?.toFixed(1)}%
+                  </p>
                 </div>
               ))}
             </div>
             <p className="text-xs text-gray-400 mt-4 text-center">
-              Model: <span className="font-semibold">{prediction.model}</span> | {prediction.note}
+              Model: <span className="font-semibold">{prediction.model}</span> |{' '}
+              {prediction.note}
             </p>
           </motion.div>
         )}
@@ -352,12 +431,32 @@ const StockDetail = () => {
           >
             <h2 className="text-xl font-bold text-white mb-4">Key Statistics</h2>
             <div className="space-y-3">
-              <div className="flex justify-between"><span className="text-gray-400">Open</span><span>${stockInfo?.open?.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">High</span><span>${stockInfo?.day_high?.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">Low</span><span>${stockInfo?.day_low?.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">Volume</span><span>{stockInfo?.volume?.toLocaleString()}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">Market Cap</span><span>${(stockInfo?.market_cap / 1e9)?.toFixed(2)}B</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">P/E Ratio</span><span>{stockInfo?.pe_ratio?.toFixed(2) || 'N/A'}</span></div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Open</span>
+                <span>${stockInfo?.open?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">High</span>
+                <span>${stockInfo?.day_high?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Low</span>
+                <span>${stockInfo?.day_low?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Volume</span>
+                <span>{stockInfo?.volume?.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Market Cap</span>
+                <span>
+                  ${(stockInfo?.market_cap / 1e9)?.toFixed(2)}B
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">P/E Ratio</span>
+                <span>{stockInfo?.pe_ratio?.toFixed(2) || 'N/A'}</span>
+              </div>
             </div>
           </motion.div>
 
@@ -369,11 +468,26 @@ const StockDetail = () => {
           >
             <h2 className="text-xl font-bold text-white mb-4">Company Info</h2>
             <div className="space-y-3">
-              <div className="flex justify-between"><span className="text-gray-400">Sector</span><span>{stockInfo?.sector || 'N/A'}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">Industry</span><span>{stockInfo?.industry || 'N/A'}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">52W High</span><span>${stockInfo?.['52_week_high']?.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">52W Low</span><span>${stockInfo?.['52_week_low']?.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">Beta</span><span>{stockInfo?.beta?.toFixed(2) || 'N/A'}</span></div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Sector</span>
+                <span>{stockInfo?.sector || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Industry</span>
+                <span>{stockInfo?.industry || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">52W High</span>
+                <span>${stockInfo?.['52_week_high']?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">52W Low</span>
+                <span>${stockInfo?.['52_week_low']?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Beta</span>
+                <span>{stockInfo?.beta?.toFixed(2) || 'N/A'}</span>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -386,7 +500,9 @@ const StockDetail = () => {
             className="glass p-6 rounded-xl"
           >
             <h2 className="text-xl font-bold text-white mb-4">About</h2>
-            <p className="text-gray-400 leading-relaxed">{stockInfo.description}</p>
+            <p className="text-gray-400 leading-relaxed">
+              {stockInfo.description}
+            </p>
           </motion.div>
         )}
       </div>

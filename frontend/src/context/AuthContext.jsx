@@ -1,7 +1,8 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../services/api';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -12,50 +13,48 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);      // { id, username, email, is_admin, ... }
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const token = localStorage.getItem('token');
-  const savedUser = localStorage.getItem('user');
-  
-  console.log('🔍 Checking localStorage on mount...');
-  console.log('Token:', token);
-  console.log('User:', savedUser);
-  
-  if (token && savedUser && savedUser !== 'undefined') {  // ADD THIS CHECK
-    try {
-      setUser(JSON.parse(savedUser));
-      console.log('✅ User restored');
-    } catch (e) {
-      console.error('❌ Error parsing user:', e);
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+  // Restore auth state on reload
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+
+    if (token && savedUser && savedUser !== 'undefined') {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+      } catch (err) {
+        console.error('Error parsing saved user:', err);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
-  }
-  setLoading(false);
-}, []);
+    setLoading(false);
+  }, []);
 
-
+  // Login (works for both user and admin)
   const login = async (credentials) => {
     const response = await authAPI.login(credentials);
-    const { token, user: userData } = response.data;
-    
+    const { token, user: userData } = response.data; // userData includes is_admin
+
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
-    
+
     return userData;
   };
 
+  // Signup (new accounts are normal users; is_admin=false from backend)
   const signup = async (userData) => {
     const response = await authAPI.signup(userData);
     const { token, user: newUser } = response.data;
-    
+
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(newUser));
     setUser(newUser);
-    
+
     return newUser;
   };
 
@@ -72,6 +71,7 @@ useEffect(() => {
     signup,
     logout,
     isAuthenticated: !!user,
+    isAdmin: !!user?.is_admin,   // helper: true only for admin accounts
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

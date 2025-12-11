@@ -1,6 +1,6 @@
 # backend/api/admin.py
 from flask import Blueprint, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from config.database import (
     db,
     User,
@@ -11,14 +11,24 @@ from config.database import (
     Portfolio,
 )
 
-admin_bp = Blueprint('admin', __name__)
+admin_bp = Blueprint('admin', __name__, url_prefix="/admin")
+
 
 def _ensure_admin():
+    """
+    Ensure current JWT belongs to an admin.
+    Uses is_admin claim from token and falls back to DB check.
+    """
+    claims = get_jwt()
+    if not claims.get("is_admin"):
+        return None
+
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = User.query.get(int(user_id)) if user_id is not None else None
     if not user or not user.is_admin:
         return None
     return user
+
 
 @admin_bp.route('/stats', methods=['GET'])
 @jwt_required()
