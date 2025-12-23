@@ -18,9 +18,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Handle response errors
@@ -47,9 +45,10 @@ export const authAPI = {
 
 // Stock APIs
 export const stockAPI = {
-  search: (query) => api.get(`/stocks/search?q=${query}`),
+  search: (query) => api.get(`/stocks/search?q=${encodeURIComponent(query)}`),
   getInfo: (symbol) => api.get(`/stocks/info/${symbol}`),
-  getHistorical: (symbol, period = '1y') => api.get(`/stocks/historical/${symbol}?period=${period}`),
+  getHistorical: (symbol, period = '1y') =>
+    api.get(`/stocks/historical/${symbol}?period=${period}`),
   getRealtime: (symbol) => api.get(`/stocks/realtime/${symbol}`),
   getTrending: () => api.get('/stocks/trending'),
   getWatchlist: () => api.get('/stocks/watchlist'),
@@ -60,7 +59,8 @@ export const stockAPI = {
 // Prediction APIs
 export const predictionAPI = {
   predict: (symbol) => api.get(`/predictions/predict/${symbol}`),
-  getHistory: (limit = 20) => api.get(`/predictions/history?limit=${limit}`),
+  getHistory: (limit = 20) =>
+    api.get(`/predictions/history?limit=${limit}`),
   getAccuracy: (symbol) => api.get(`/predictions/accuracy/${symbol}`),
 };
 
@@ -70,7 +70,26 @@ export const tradingAPI = {
   buy: (symbol, quantity) => api.post('/trading/buy', { symbol, quantity }),
   sell: (symbol, quantity) => api.post('/trading/sell', { symbol, quantity }),
   getPortfolio: () => api.get('/trading/portfolio'),
-  getTransactions: (limit = 50) => api.get(`/trading/transactions?limit=${limit}`),
+  getTransactions: (limit = 50) =>
+    api.get(`/trading/transactions?limit=${limit}`),
+};
+
+// Admin APIs (for admin portal)
+export const adminAPI = {
+  // Stats & Dashboard
+  getStats: () => api.get('/admin/stats'),
+
+  // User Management
+  listUsers: () => api.get('/admin/users'),
+  getUser: (id) => api.get(`/admin/users/${id}`),
+  updateUser: (id, data) => api.patch(`/admin/users/${id}`, data),
+  deleteUser: (id) => api.delete(`/admin/users/${id}`),
+
+  // Reports
+  listReports: () => api.get('/admin/reports'),
+  runReport: (id) => api.post(`/admin/reports/${id}/run`),
+  downloadReport: (id) =>
+    api.get(`/admin/reports/${id}/download`, { responseType: 'blob' }),
 };
 
 export default api;

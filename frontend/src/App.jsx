@@ -1,9 +1,10 @@
+// App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Navbar from './components/common/Navbar';
 import Loader from './components/common/Loader';
+import UserLayout from './components/common/UserLayout';
+import AdminLayout from './components/common/AdminLayout';
 
-// Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -13,111 +14,169 @@ import StockDetail from './pages/StockDetail';
 import Trading from './pages/Trading';
 import Learning from './pages/Learning';
 import Profile from './pages/Profile';
-import AdminDashboard from './pages/AdminDashboard'; // NEW
+import AdminDashboard from './pages/AdminDashboard';
 
-// Protected Route Component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const RoleProtectedRoute = ({ children, allowedRoles }) => {
+  const { user, loading } = useAuth();
 
   if (loading) return <Loader />;
-  return isAuthenticated ? children : <Navigate to="/login" />;
+
+  if (!user) return <Navigate to="/login" replace />;
+
+  const currentRole = user.is_admin ? 'admin' : 'user';
+  if (allowedRoles && !allowedRoles.includes(currentRole)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
-// Public Route (redirect if authenticated)
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, isAdmin } = useAuth();
 
   if (loading) return <Loader />;
-  return !isAuthenticated ? children : <Navigate to="/dashboard" />;
+
+  if (isAuthenticated) {
+    return <Navigate to={isAdmin ? '/admin/dashboard' : '/dashboard'} replace />;
+  }
+
+  return children;
 };
 
 function AppContent() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-900">
-        <Navbar />
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <PublicRoute>
-                <Signup />
-              </PublicRoute>
-            }
-          />
+      <Routes>
+        {/* Public */}
+        <Route
+          path="/"
+          element={
+            <UserLayout>
+              <Home />
+            </UserLayout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
 
-          {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
+        {/* User portal */}
+        <Route
+          path="/dashboard"
+          element={
+            <RoleProtectedRoute allowedRoles={['user']}>
+              <UserLayout>
                 <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/stocks"
-            element={
-              <ProtectedRoute>
+              </UserLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/stocks"
+          element={
+            <RoleProtectedRoute allowedRoles={['user']}>
+              <UserLayout>
                 <StockExplorer />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/stocks/:symbol"
-            element={
-              <ProtectedRoute>
+              </UserLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/stocks/:symbol"
+          element={
+            <RoleProtectedRoute allowedRoles={['user']}>
+              <UserLayout>
                 <StockDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/trading"
-            element={
-              <ProtectedRoute>
+              </UserLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/trading"
+          element={
+            <RoleProtectedRoute allowedRoles={['user']}>
+              <UserLayout>
                 <Trading />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/learning"
-            element={
-              <ProtectedRoute>
+              </UserLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/learning"
+          element={
+            <RoleProtectedRoute allowedRoles={['user']}>
+              <UserLayout>
                 <Learning />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
+              </UserLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <RoleProtectedRoute allowedRoles={['user']}>
+              <UserLayout>
                 <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
+              </UserLayout>
+            </RoleProtectedRoute>
+          }
+        />
 
-          {/* Catch all */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
+        {/* Admin portal */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <RoleProtectedRoute allowedRoles={['admin']}>
+              <AdminLayout>
+                <AdminDashboard section="overview" />
+              </AdminLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <RoleProtectedRoute allowedRoles={['admin']}>
+              <AdminLayout>
+                <AdminDashboard section="users" />
+              </AdminLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/models"
+          element={
+            <RoleProtectedRoute allowedRoles={['admin']}>
+              <AdminLayout>
+                <AdminDashboard section="models" />
+              </AdminLayout>
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/reports"
+          element={
+            <RoleProtectedRoute allowedRoles={['admin']}>
+              <AdminLayout>
+                <AdminDashboard section="reports" />
+              </AdminLayout>
+            </RoleProtectedRoute>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

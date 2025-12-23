@@ -2,11 +2,12 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
     create_access_token,
     jwt_required,
-    get_jwt_identity
+    get_jwt_identity,
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from config.database import db, User, UserBalance
 from datetime import timedelta
+
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -15,10 +16,10 @@ auth_bp = Blueprint('auth', __name__)
 def signup():
     """Register a new user"""
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
 
         # Validate input
-        if not data or not all(k in data for k in ('username', 'email', 'password')):
+        if not all(k in data for k in ('username', 'email', 'password')):
             return jsonify({'error': 'Missing required fields'}), 400
 
         username = data['username']
@@ -38,43 +39,46 @@ def signup():
             username=username,
             email=email,
             password_hash=generate_password_hash(password),
-            full_name=full_name
+            full_name=full_name,
         )
-
         db.session.add(new_user)
-        db.session.commit()
+        db.session.flush()  # ensure new_user.id is available before creating balance [web:158][web:161]
 
-        # Create user balance ($100,000 virtual money)
+        # Create user balance (e.g. default virtual money handled by model default)
         balance = UserBalance(user_id=new_user.id)
         db.session.add(balance)
+
+        # Single commit for both user and balance
         db.session.commit()
 
         # Generate access token (identity must be string)
-        # Also include is_admin flag as custom claim for the frontend
+        # Also include is_admin flag as custom claim for the frontend [web:165]
         access_token = create_access_token(
             identity=str(new_user.id),
             additional_claims={"is_admin": new_user.is_admin},
-            expires_delta=timedelta(days=7)
+            expires_delta=timedelta(days=7),
         )
 
         return jsonify({
             'message': 'User registered successfully',
             'token': access_token,
-            'user': new_user.to_dict()
+            'user': new_user.to_dict(),
         }), 201
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        # Do not leak internal exception details in production
+        print(f"❌ Signup error: {str(e)}")
+        return jsonify({'error': 'Registration failed'}), 500
 
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     """User login (works for both user and admin accounts)"""
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
 
-        if not data or not all(k in data for k in ('username', 'password')):
+        if not all(k in data for k in ('username', 'password')):
             return jsonify({'error': 'Missing username or password'}), 400
 
         username = data['username']
@@ -90,21 +94,22 @@ def login():
             return jsonify({'error': 'Account is deactivated'}), 403
 
         # Generate access token (identity must be string)
-        # Important: also embed is_admin so frontend can route to right portal
+        # Important: also embed is_admin so frontend can route to right portal [web:165]
         access_token = create_access_token(
             identity=str(user.id),
             additional_claims={"is_admin": user.is_admin},
-            expires_delta=timedelta(days=7)
+            expires_delta=timedelta(days=7),
         )
 
         return jsonify({
             'message': 'Login successful',
             'token': access_token,
-            'user': user.to_dict()
+            'user': user.to_dict(),
         }), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"❌ Login error: {str(e)}")
+        return jsonify({'error': 'Login failed'}), 500
 
 
 @auth_bp.route('/profile', methods=['GET'])
@@ -121,7 +126,8 @@ def get_profile():
         return jsonify({'user': user.to_dict()}), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"❌ Get profile error: {str(e)}")
+        return jsonify({'error': 'Failed to fetch profile'}), 500
 
 
 @auth_bp.route('/profile', methods=['PUT'])
@@ -150,12 +156,13 @@ def update_profile():
 
         return jsonify({
             'message': 'Profile updated successfully',
-            'user': user.to_dict()
+            'user': user.to_dict(),
         }), 200
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"❌ Update profile error: {str(e)}")
+        return jsonify({'error': 'Failed to update profile'}), 500
 
 
 @auth_bp.route('/change-password', methods=['POST'])
@@ -184,4 +191,5 @@ def change_password():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f("❌ Change password error: {str(e)}"))
+        return jsonify({'error': 'Failed to change password'}), 500

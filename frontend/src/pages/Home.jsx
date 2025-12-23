@@ -1,10 +1,27 @@
 import { Link } from 'react-router-dom';
-import { 
-  TrendingUp, BarChart3, Brain, Shield, Zap, DollarSign, 
-  ArrowRight, TrendingDown, Newspaper, BookOpen, Users, 
-  Clock, Star, CheckCircle, Activity, Globe, Sparkles,
-  LineChart, Target, Award, Play, ChevronRight, Bell, Download, 
-  Smartphone, Monitor, Apple, Rocket
+import {
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  Brain,
+  Shield,
+  Zap,
+  DollarSign,
+  ArrowRight,
+  Newspaper,
+  Users,
+  Clock,
+  Star,
+  CheckCircle,
+  Activity,
+  Sparkles,
+  Play,
+  ChevronRight,
+  Bell,
+  Download,
+  Smartphone,
+  Apple,
+  Rocket,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -14,7 +31,7 @@ const Home = () => {
     spy: { price: 485.32, change: 2.45 },
     btc: { price: 42150, change: -1.23 },
     nasdaq: { price: 16240, change: 1.87 },
-    gold: { price: 2042.50, change: 0.56 }
+    gold: { price: 2042.5, change: 0.56 },
   });
 
   const [tickerStocks] = useState([
@@ -28,44 +45,44 @@ const Home = () => {
     {
       icon: Brain,
       title: 'AI Predictions',
-      description: 'LSTM & Transformer models with 95%+ accuracy',
+      description: 'LSTM & Transformer models tuned for short‑term and swing trades.',
       color: 'from-blue-500 to-cyan-500',
-      stats: '95% accuracy'
+      stats: 'Signal accuracy focus',
     },
     {
       icon: BarChart3,
       title: 'Real-Time Analytics',
-      description: 'Sub-millisecond data feeds, 50+ technical indicators',
+      description: 'Microsecond-level feeds, 50+ indicators, and custom dashboards.',
       color: 'from-emerald-500 to-teal-500',
-      stats: '<1ms latency'
+      stats: 'Low-latency data',
     },
     {
       icon: DollarSign,
       title: 'Paper Trading',
-      description: '$100K virtual capital, real market conditions',
+      description: '$100K virtual capital with realistic fills and P&L tracking.',
       color: 'from-yellow-500 to-orange-500',
-      stats: '$100K capital'
+      stats: '$100K sandbox',
     },
     {
       icon: Shield,
       title: 'Risk Management',
-      description: 'VaR, Sharpe Ratio, Beta, max drawdown analysis',
+      description: 'VaR, Sharpe, Beta, and drawdown rules baked into every trade.',
       color: 'from-purple-500 to-pink-500',
-      stats: '15+ metrics'
+      stats: '15+ risk metrics',
     },
     {
       icon: Zap,
       title: 'Lightning Fast',
-      description: 'Optimized ML inference, 99.99% uptime SLA',
+      description: 'Optimized inference pipeline for instant AI signals.',
       color: 'from-orange-500 to-red-500',
-      stats: '99.99% uptime'
+      stats: 'Snappy UX',
     },
     {
       icon: Activity,
       title: 'Market Sentiment',
-      description: 'NLP-powered news analysis from 10K+ sources',
+      description: 'News and social sentiment scoring for 10K+ tickers.',
       color: 'from-rose-500 to-red-500',
-      stats: '10K+ sources'
+      stats: 'NLP insights',
     },
   ];
 
@@ -74,19 +91,19 @@ const Home = () => {
     { symbol: 'NVDA', name: 'NVIDIA Corp', price: 495.22, change: 5.67, volume: '45.2M', prediction: 'STRONG BUY' },
     { symbol: 'MSFT', name: 'Microsoft', price: 378.91, change: 1.23, volume: '28.9M', prediction: 'BUY' },
     { symbol: 'TSLA', name: 'Tesla Inc.', price: 242.84, change: -1.45, volume: '98.7M', prediction: 'HOLD' },
-    { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 141.80, change: 0.89, volume: '23.4M', prediction: 'BUY' },
-    { symbol: 'AMZN', name: 'Amazon.com', price: 151.94, change: -0.67, volume: '41.2M', prediction: 'HOLD' }
+    { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 141.8, change: 0.89, volume: '23.4M', prediction: 'BUY' },
+    { symbol: 'AMZN', name: 'Amazon.com', price: 151.94, change: -0.67, volume: '41.2M', prediction: 'HOLD' },
   ];
 
   const latestNews = [
     {
-      title: 'Fed Signals Rate Cuts in 2025 Amid Cooling Inflation',
+      title: 'Fed hints at 2025 rate cuts as inflation cools further.',
       source: 'Reuters',
       time: '2h ago',
       category: 'Economy',
     },
     {
-      title: 'NVIDIA Unveils Next-Gen AI Chips, Stock Surges 5.6%',
+      title: 'NVIDIA unveils next‑gen AI chips, stock spikes over 5%.',
       source: 'Bloomberg',
       time: '4h ago',
       category: 'Tech',
@@ -97,31 +114,37 @@ const Home = () => {
     {
       name: 'Alex Thompson',
       role: 'Day Trader',
-      text: '34% returns in 3 months. AI predictions are incredibly accurate!',
+      text: '34% returns in 3 months. AI signals and risk controls keep me disciplined.',
       rating: 5,
     },
     {
       name: 'Priya Sharma',
       role: 'Investment Analyst',
-      text: 'Institutional-grade tools accessible to everyone. Game-changer.',
+      text: 'The closest thing to institutional research for independent traders.',
       rating: 5,
     },
   ];
 
+  const showCount = typeof window !== 'undefined' && window.innerWidth < 640 ? 3 : 6;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white overflow-hidden">
-      {/* Live Market Ticker */}
-      <div className="bg-gray-950/50 backdrop-blur-xl border-b border-gray-800/50 py-2 overflow-hidden">
-        <motion.div 
-          className="flex space-x-6 md:space-x-8"
-          animate={{ x: [0, -800] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-black text-white">
+      {/* Ticker Bar */}
+      <div className="h-10 md:h-11 bg-slate-950/80 backdrop-blur border-b border-slate-800 flex items-center overflow-hidden">
+        <motion.div
+          className="flex gap-8 px-4"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
         >
-          {[...tickerStocks, ...tickerStocks, ...tickerStocks].map((stock, index) => (
-            <div key={index} className="flex items-center space-x-2 md:space-x-3 whitespace-nowrap">
-              <span className="font-bold text-white text-sm md:text-base">{stock.symbol}</span>
-              <span className="text-gray-400 text-xs md:text-sm">${stock.price}</span>
-              <span className={`flex items-center text-xs md:text-sm ${stock.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+          {[...tickerStocks, ...tickerStocks].map((stock, idx) => (
+            <div key={idx} className="flex items-center gap-2 whitespace-nowrap text-xs md:text-sm">
+              <span className="font-semibold text-slate-100">{stock.symbol}</span>
+              <span className="text-slate-400">${stock.price}</span>
+              <span
+                className={`flex items-center ${
+                  stock.change >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                }`}
+              >
                 {stock.change >= 0 ? '▲' : '▼'} {Math.abs(stock.change)}%
               </span>
             </div>
@@ -129,90 +152,104 @@ const Home = () => {
         </motion.div>
       </div>
 
-      {/* Hero Section */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-        {/* Animated Background Blobs */}
-        <div className="absolute top-10 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-20 right-0 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-1/2 w-80 h-80 bg-pink-500/5 rounded-full blur-3xl"></div>
+      {/* Hero */}
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-14 pb-10">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-24 -left-16 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl" />
+          <div className="absolute -top-10 right-0 w-72 h-72 bg-purple-500/15 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl" />
+        </div>
 
-        <div className="text-center relative z-10">
-          {/* New Logo Design */}
+        <div className="text-center relative">
+          {/* Compact logo */}
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, type: "spring" }}
-            className="flex justify-center mb-6"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4, type: 'spring' }}
+            className="flex justify-center mb-5"
           >
             <div className="relative">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-[32px] flex items-center justify-center shadow-2xl shadow-purple-500/30 border border-white/10">
-                <TrendingUp className="w-10 h-10 md:w-12 md:h-12 text-white" strokeWidth={2.5} />
-                <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-yellow-400" fill="currentColor" />
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/40 border border-white/10">
+                <TrendingUp className="w-7 h-7 text-white" strokeWidth={2.4} />
               </div>
+              <Sparkles className="absolute -top-1 -right-1 w-5 h-5 text-yellow-400" />
             </div>
           </motion.div>
 
           {/* Badge */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="mb-4"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-3"
           >
-            <span className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 rounded-full text-emerald-400 font-semibold text-xs backdrop-blur-xl">
-              <Award className="w-3 h-3 mr-2" />
-              50,000+ Traders Worldwide
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-emerald-500/40 text-xs font-semibold text-emerald-300">
+              <Users className="w-3 h-3" />
+              50,000+ traders using AI signals daily
             </span>
           </motion.div>
 
-          {/* Title */}
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 md:mb-4 leading-tight"
+            transition={{ delay: 0.2 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-3"
           >
-            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Trade Smarter
             </span>
             <br />
-            <span className="text-white">With AI Power</span>
+            <span className="text-slate-50">With AI‑First Insights</span>
           </motion.h1>
 
-          {/* Description */}
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-sm sm:text-base md:text-xl text-gray-300 mb-5 md:mb-6 max-w-3xl mx-auto leading-relaxed px-4"
+          <motion.p
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="max-w-3xl mx-auto text-sm md:text-lg text-slate-300 mb-6 leading-relaxed"
           >
-            AI-powered predictions, real-time analytics, institutional tools. 
-            Start with <span className="text-emerald-400 font-bold">$100,000</span> virtual capital.
+            Combine AI predictions, real‑time analytics, and strict risk controls. Start with{' '}
+            <span className="text-emerald-400 font-semibold">$100,000</span> of virtual capital and
+            test your strategies safely.
           </motion.p>
 
-          {/* Market Overview */}
+          {/* Market cards */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="glass border border-gray-700/50 rounded-xl md:rounded-2xl p-3 md:p-4 mb-5 md:mb-6 max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="mx-auto max-w-3xl mb-6"
           >
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { name: 'S&P', value: marketData.spy.price, change: marketData.spy.change },
-                { name: 'BTC', value: `$${(marketData.btc.price / 1000).toFixed(1)}K`, change: marketData.btc.change },
-                { name: 'NASDAQ', value: `${(marketData.nasdaq.price / 1000).toFixed(1)}K`, change: marketData.nasdaq.change },
-                { name: 'Gold', value: `$${marketData.gold.price}`, change: marketData.gold.change }
-              ].map((market, index) => (
-                <motion.div 
-                  key={index}
-                  whileHover={{ scale: 1.05 }}
-                  className="text-center p-2 md:p-3 rounded-lg bg-gray-800/30 border border-gray-700/30 hover:border-blue-500/50 transition-all cursor-pointer"
+                {
+                  name: 'BTC',
+                  value: `$${(marketData.btc.price / 1000).toFixed(1)}K`,
+                  change: marketData.btc.change,
+                },
+                {
+                  name: 'NASDAQ',
+                  value: `${(marketData.nasdaq.price / 1000).toFixed(1)}K`,
+                  change: marketData.nasdaq.change,
+                },
+                { name: 'Gold', value: `$${marketData.gold.price}`, change: marketData.gold.change },
+              ].map((m) => (
+                <motion.div
+                  key={m.name}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  className="rounded-xl bg-slate-900/70 border border-slate-800/80 px-3 py-2.5 text-left shadow-[0_0_20px_rgba(15,23,42,0.9)]"
                 >
-                  <p className="text-gray-400 text-xs font-medium mb-1">{market.name}</p>
-                  <p className="text-base md:text-xl font-bold text-white">{market.value}</p>
-                  <p className={`text-xs font-semibold ${market.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {market.change >= 0 ? '+' : ''}{market.change}%
+                  <p className="text-[11px] font-medium text-slate-400 mb-0.5">{m.name}</p>
+                  <p className="text-lg font-semibold text-slate-50">{m.value}</p>
+                  <p
+                    className={`text-[11px] font-semibold ${
+                      m.change >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                    }`}
+                  >
+                    {m.change >= 0 ? '+' : ''}
+                    {m.change}%
                   </p>
                 </motion.div>
               ))}
@@ -220,103 +257,109 @@ const Home = () => {
           </motion.div>
 
           {/* CTAs */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row justify-center gap-3 mb-4 md:mb-6 px-4"
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4"
           >
             <Link
               to="/signup"
-              className="group px-8 md:px-10 py-3 md:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-base md:text-lg font-black transition-all hover:scale-105 shadow-2xl shadow-blue-500/40 flex items-center justify-center"
+              className="group inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-3 md:px-10 md:py-3.5 text-sm md:text-base font-semibold shadow-lg shadow-blue-500/40 hover:shadow-blue-500/60 transition-transform hover:-translate-y-0.5"
             >
-              <Play className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+              <Play className="w-4 h-4 mr-2" />
               Start Free
-              <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               to="/login"
-              className="px-8 md:px-10 py-3 md:py-4 glass border-2 border-gray-700 hover:border-blue-500 rounded-xl text-base md:text-lg font-black transition-all hover:scale-105 flex items-center justify-center"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-700/80 bg-slate-900/60 px-8 py-3 md:px-10 md:py-3.5 text-sm md:text-base font-semibold text-slate-100 hover:border-blue-500/60 hover:bg-slate-900"
             >
               Sign In
             </Link>
           </motion.div>
 
-          {/* Trust Badges */}
+          {/* small trust row */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="flex flex-wrap justify-center gap-3 md:gap-6 text-xs px-4"
+            transition={{ delay: 0.45 }}
+            className="flex flex-wrap justify-center gap-4 text-[11px] md:text-xs text-slate-400"
           >
-            {[
-              { icon: CheckCircle, text: 'No credit card' },
-              { icon: Shield, text: 'Risk-free' },
-              { icon: Activity, text: 'Real data' }
-            ].map((badge, index) => {
-              const Icon = badge.icon;
-              return (
-                <div key={index} className="flex items-center text-gray-300">
-                  <Icon className="w-3 h-3 md:w-4 md:h-4 text-emerald-400 mr-1" />
-                  {badge.text}
-                </div>
-              );
-            })}
+            <span className="inline-flex items-center gap-1">
+              <CheckCircle className="w-3 h-3 text-emerald-400" /> No credit card
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Shield className="w-3 h-3 text-sky-400" /> Risk‑free sandbox
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Activity className="w-3 h-3 text-purple-400" /> Live market data
+            </span>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Trending Stocks */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-        <div className="text-center mb-6 md:mb-10">
-          <h2 className="text-2xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Trending Stocks
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16">
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold mb-1 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Trending Stocks Today
           </h2>
-          <p className="text-gray-400 text-sm md:text-lg">AI predictions available</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {trendingStocks.slice(0, window.innerWidth < 640 ? 3 : 6).map((stock, index) => (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          {trendingStocks.slice(0, showCount).map((stock, index) => (
             <motion.div
               key={stock.symbol}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.03 }}
-              className="glass border border-gray-700/50 hover:border-blue-500/50 p-4 rounded-xl cursor-pointer transition-all group"
+              transition={{ delay: index * 0.06 }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="relative rounded-2xl bg-slate-950/70 border border-slate-800/90 hover:border-blue-500/60 shadow-[0_20px_40px_rgba(15,23,42,0.9)] p-4 cursor-pointer group overflow-hidden"
             >
-              <div className="flex justify-between items-start mb-3">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-transparent" />
+              <div className="relative flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold text-white">{stock.symbol}</h3>
-                  <p className="text-gray-400 text-xs">{stock.name}</p>
+                  <h3 className="text-lg md:text-xl font-semibold text-slate-50">{stock.symbol}</h3>
+                  <p className="text-[11px] text-slate-400">{stock.name}</p>
                 </div>
-                <div className={`px-2 py-1 rounded-full text-xs font-bold ${
-                  stock.change >= 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'
-                }`}>
-                  {stock.change >= 0 ? '+' : ''}{stock.change}%
+                <div
+                  className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+                    stock.change >= 0 ? 'bg-emerald-500/15 text-emerald-300' : 'bg-rose-500/15 text-rose-300'
+                  }`}
+                >
+                  {stock.change >= 0 ? '+' : ''}
+                  {stock.change}%
                 </div>
-              </div>
-              
-              <div className="flex justify-between items-end mb-3">
-                <div>
-                  <p className="text-2xl md:text-3xl font-bold text-white">${stock.price}</p>
-                  <p className="text-gray-500 text-xs">Vol: {stock.volume}</p>
-                </div>
-                {stock.change >= 0 ? 
-                  <TrendingUp className="w-8 h-8 text-emerald-400" /> : 
-                  <TrendingDown className="w-8 h-8 text-red-400" />
-                }
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-gray-800">
-                <div className="flex items-center">
-                  <Brain className="w-3 h-3 text-purple-400 mr-1" />
-                  <span className="text-xs text-gray-400">AI</span>
+              <div className="relative flex justify-between items-end mb-3">
+                <div>
+                  <p className="text-2xl font-bold text-slate-50">${stock.price}</p>
+                  <p className="text-[11px] text-slate-500">Vol {stock.volume}</p>
                 </div>
-                <span className={`text-xs font-bold ${
-                  stock.prediction === 'STRONG BUY' ? 'text-emerald-400' : 'text-blue-400'
-                }`}>
+                {stock.change >= 0 ? (
+                  <TrendingUp className="w-7 h-7 text-emerald-400" />
+                ) : (
+                  <TrendingDown className="w-7 h-7 text-rose-400" />
+                )}
+              </div>
+
+              <div className="relative flex items-center justify-between pt-2 border-t border-slate-800/80 text-[11px]">
+                <div className="flex items-center gap-1 text-slate-400">
+                  <Brain className="w-3 h-3 text-purple-300" />
+                  AI signal
+                </div>
+                <span
+                  className={`font-semibold ${
+                    stock.prediction === 'STRONG BUY'
+                      ? 'text-emerald-300'
+                      : stock.prediction === 'HOLD'
+                      ? 'text-amber-300'
+                      : 'text-sky-300'
+                  }`}
+                >
                   {stock.prediction}
                 </span>
               </div>
@@ -324,22 +367,21 @@ const Home = () => {
           ))}
         </div>
 
-        <div className="text-center mt-6 md:mt-8">
+        <div className="text-center mt-6">
           <Link
             to="/stocks"
-            className="inline-flex items-center px-6 py-2.5 glass border border-blue-500/50 hover:bg-blue-500/10 rounded-xl text-sm md:text-base font-bold transition-all hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700/80 bg-slate-900/70 px-6 py-2.5 text-sm font-semibold text-slate-100 hover:border-blue-500/60 hover:bg-slate-900"
           >
-            View All Stocks
-            <ChevronRight className="ml-2 w-4 h-4" />
+            View all stocks
+            <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-      </div>
+      </section>
 
-      {/* Features Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-        <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-2xl md:text-4xl font-bold mb-2">Why Choose Us?</h2>
-          <p className="text-gray-400 text-sm md:text-lg px-4">Professional-grade AI tools</p>
+      {/* Features */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold mb-1">Why traders stay here</h2>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -347,153 +389,131 @@ const Home = () => {
             const Icon = feature.icon;
             return (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
+                key={feature.title}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
-                whileHover={{ scale: 1.05 }}
-                className="glass border border-gray-700/50 p-5 md:p-6 rounded-xl transition-all cursor-pointer group"
+                whileHover={{ y: -6, scale: 1.03 }}
+                className="relative rounded-2xl bg-slate-950/70 border border-slate-800/90 p-5 overflow-hidden group"
               >
-                <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
-                  <Icon className="w-6 h-6 md:w-8 md:h-8 text-white" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold mb-2 text-white group-hover:text-blue-400 transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-3">
-                  {feature.description}
-                </p>
-                <div className={`inline-block px-2.5 py-1 rounded-full bg-gradient-to-r ${feature.color} bg-opacity-20 text-white text-xs font-semibold`}>
-                  {feature.stats}
+                <div
+                  className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br ${feature.color} from-20% to-transparent`}
+                />
+                <div className="relative">
+                  <div
+                    className={`w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3 shadow-lg shadow-slate-900`}
+                  >
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-base md:text-lg font-semibold mb-1 text-slate-50">
+                    {feature.title}
+                  </h3>
+                  <p className="text-xs md:text-sm text-slate-300 mb-3 leading-relaxed">
+                    {feature.description}
+                  </p>
+                  <span className="inline-flex px-2.5 py-1 rounded-full bg-slate-900/70 border border-white/10 text-[11px] text-slate-100 font-medium">
+                    {feature.stats}
+                  </span>
                 </div>
               </motion.div>
             );
           })}
         </div>
-      </div>
+      </section>
 
-      {/* Latest News */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-        <div className="flex justify-between items-center mb-6 md:mb-10">
+      {/* News */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl md:text-4xl font-bold mb-1">Market News</h2>
-            <p className="text-gray-400 text-xs md:text-base">AI-powered insights</p>
+            <h2 className="text-2xl md:text-3xl font-bold">Market pulse</h2>
+            <p className="text-xs md:text-sm text-slate-400">Curated macro and tech headlines.</p>
           </div>
-          <Newspaper className="w-8 h-8 md:w-12 md:h-12 text-blue-400" />
+          <Newspaper className="w-8 h-8 text-sky-400" />
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
           {latestNews.map((news, index) => (
             <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
+              key={news.title}
+              initial={{ opacity: 0, x: -16 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              className="glass border border-gray-700/50 hover:border-blue-500/50 p-4 rounded-xl cursor-pointer transition-all"
+              transition={{ delay: index * 0.08 }}
+              whileHover={{ y: -4, borderColor: 'rgb(59 130 246)' }}
+              className="rounded-2xl bg-slate-950/70 border border-slate-800/90 p-4 cursor-pointer"
             >
               <div className="flex items-center gap-2 mb-2">
-                <span className="px-3 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-full text-xs font-bold">
+                <span className="px-3 py-1 rounded-full bg-sky-500/20 border border-sky-500/40 text-[11px] font-semibold text-sky-300">
                   {news.category}
                 </span>
-                <span className="text-gray-500 text-xs flex items-center ml-auto">
-                  <Clock className="w-3 h-3 mr-1" />
+                <span className="ml-auto inline-flex items-center gap-1 text-[11px] text-slate-500">
+                  <Clock className="w-3 h-3" />
                   {news.time}
                 </span>
               </div>
-              <h3 className="text-sm md:text-base font-bold text-white hover:text-blue-400 transition-colors leading-tight">
+              <h3 className="text-sm md:text-base font-semibold text-slate-50 leading-snug mb-1">
                 {news.title}
               </h3>
-              <p className="text-gray-500 text-xs mt-2">{news.source}</p>
+              <p className="text-[11px] text-slate-500">{news.source}</p>
             </motion.div>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* Testimonials */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-        <div className="text-center mb-6 md:mb-10">
-          <h2 className="text-2xl md:text-4xl font-bold mb-2">Trusted Worldwide</h2>
-          <p className="text-gray-400 text-sm md:text-lg">Real trader stories</p>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16">
+        <div className="text-center mb-7">
+          <h2 className="text-2xl md:text-3xl font-bold mb-1">Traders on StockPredict</h2>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
-          {testimonials.map((testimonial, index) => (
+          {testimonials.map((t, index) => (
             <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95 }}
+              key={t.name}
+              initial={{ opacity: 0, scale: 0.96 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.03 }}
-              className="glass border border-gray-700/50 p-5 md:p-6 rounded-xl"
+              transition={{ delay: index * 0.08 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className="rounded-2xl bg-slate-950/80 border border-slate-800/90 p-5"
             >
               <div className="flex mb-3">
-                {[...Array(testimonial.rating)].map((_, i) => (
+                {Array.from({ length: t.rating }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                 ))}
               </div>
-              <p className="text-gray-300 mb-4 italic text-sm md:text-base leading-relaxed">
-                "{testimonial.text}"
+              <p className="text-sm md:text-base text-slate-200 italic mb-4 leading-relaxed">
+                “{t.text}”
               </p>
-              <div className="flex items-center pt-4 border-t border-gray-800">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold mr-3">
-                  {testimonial.name.charAt(0)}
+              <div className="flex items-center pt-3 border-t border-slate-800">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xs font-bold mr-3">
+                  {t.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-bold text-white text-sm">{testimonial.name}</p>
-                  <p className="text-xs text-gray-400">{testimonial.role}</p>
+                  <p className="text-sm font-semibold text-slate-50">{t.name}</p>
+                  <p className="text-[11px] text-slate-400">{t.role}</p>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
-      </div>
-
-      {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-        <div className="glass border border-gray-700/50 p-6 md:p-12 rounded-2xl bg-gradient-to-br from-blue-600/10 to-purple-600/10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
-            {[
-              { value: '50K+', label: 'Traders', color: 'from-blue-400 to-cyan-400' },
-              { value: '95%', label: 'Accuracy', color: 'from-emerald-400 to-teal-400' },
-              { value: '$5B+', label: 'Volume', color: 'from-purple-400 to-pink-400' },
-              { value: '24/7', label: 'Coverage', color: 'from-orange-400 to-red-400' }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.1 }}
-              >
-                <div className={`text-3xl md:text-5xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1 md:mb-2`}>
-                  {stat.value}
-                </div>
-                <div className="text-gray-400 font-semibold text-xs md:text-base">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </section>
 
       {/* Final CTA */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-        <motion.div 
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="glass border-2 border-gray-700/50 p-8 md:p-16 rounded-2xl md:rounded-3xl text-center bg-gradient-to-br from-blue-600/10 to-purple-600/10 relative overflow-hidden"
+          className="relative glass border-2 border-gray-700/50 p-8 md:p-16 rounded-2xl md:rounded-3xl text-center bg-gradient-to-br from-blue-600/10 to-purple-600/10 overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-          
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10" />
+
           <div className="relative z-10">
             <div className="inline-flex items-center px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 font-bold text-xs md:text-sm mb-5 md:mb-6">
               <Sparkles className="w-4 h-4 mr-2" />
-              Premium Free for 3 Months
+              Premium free for 3 months
             </div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-5 leading-tight">
@@ -502,9 +522,9 @@ const Home = () => {
               </span>
             </h2>
             <p className="text-sm sm:text-base md:text-xl text-gray-300 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
-              Join 50,000+ traders using AI predictions and real-time analytics
+              Join thousands of traders using AI predictions, risk tools, and real‑time analytics.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-5 md:mb-6">
               <Link
                 to="/signup"
@@ -514,39 +534,43 @@ const Home = () => {
                 Start Free Now
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              
+
               <Link
                 to="/demo"
                 className="px-10 md:px-12 py-3.5 md:py-5 glass border-2 border-blue-500 hover:bg-blue-500/20 rounded-xl text-base md:text-xl font-black transition-all hover:scale-105 flex items-center justify-center"
               >
                 <Play className="w-5 h-5 mr-2" />
-                Demo
+                Watch Demo
               </Link>
             </div>
 
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-xs text-gray-400">
-              {['✓ No card required', '✓ $100K capital', '✓ Real data', '✓ Cancel anytime'].map((text, i) => (
-                <span key={i} className="font-semibold">{text}</span>
-              ))}
+              {['✓ No card required', '✓ $100K virtual capital', '✓ Real data', '✓ Cancel anytime'].map(
+                (text, i) => (
+                  <span key={i} className="font-semibold">
+                    {text}
+                  </span>
+                )
+              )}
             </div>
           </div>
         </motion.div>
-      </div>
+      </section>
 
-      {/* Download App Section - REDESIGNED */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 pb-16 md:pb-24">
+      {/* Download App Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 pb-16 md:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="glass border border-gray-700/50 rounded-3xl p-8 md:p-12 overflow-hidden relative"
+          className="glass border border-gray-700/50 rounded-3xl p-8 md:p-12 overflow-hidden relative bg-slate-950/80"
         >
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center relative z-10">
             {/* Left content */}
             <div>
               <div className="inline-flex items-center px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-400 font-bold text-xs md:text-sm mb-6">
                 <Smartphone className="w-4 h-4 mr-2" />
-                Download Now
+                Download the app
               </div>
 
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 leading-tight">
@@ -556,14 +580,15 @@ const Home = () => {
                   Anytime
                 </span>
               </h2>
-              
+
               <p className="text-sm md:text-lg text-gray-400 mb-6 md:mb-8 leading-relaxed">
-                Access AI predictions, real-time data, and your complete portfolio on the go. Available on iOS and Android.
+                Access AI predictions, real‑time data, and your complete portfolio on the go. Available
+                on iOS and Android.
               </p>
-              
+
               {/* App store buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   className="flex items-center justify-center sm:justify-start px-6 py-4 bg-black/50 hover:bg-black/70 rounded-2xl border-2 border-gray-700/50 hover:border-blue-500/50 transition-all"
                 >
@@ -573,8 +598,8 @@ const Home = () => {
                     <p className="font-bold text-base">App Store</p>
                   </div>
                 </motion.button>
-                
-                <motion.button 
+
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   className="flex items-center justify-center sm:justify-start px-6 py-4 bg-black/50 hover:bg-black/70 rounded-2xl border-2 border-gray-700/50 hover:border-emerald-500/50 transition-all"
                 >
@@ -589,13 +614,16 @@ const Home = () => {
               {/* Feature badges */}
               <div className="flex flex-wrap gap-3 mt-6">
                 {[
-                  { icon: Bell, text: 'Real-time Alerts' },
-                  { icon: Shield, text: 'Secure Trading' },
-                  { icon: Zap, text: 'Lightning Fast' }
+                  { icon: Bell, text: 'Real‑time alerts' },
+                  { icon: Shield, text: 'Secure trading' },
+                  { icon: Zap, text: 'Lightning fast' },
                 ].map((badge, i) => {
                   const Icon = badge.icon;
                   return (
-                    <div key={i} className="flex items-center px-3 py-2 glass border border-gray-700/30 rounded-lg text-xs">
+                    <div
+                      key={i}
+                      className="flex items-center px-3 py-2 glass border border-gray-700/30 rounded-lg text-xs"
+                    >
                       <Icon className="w-3 h-3 text-blue-400 mr-2" />
                       <span className="text-gray-300">{badge.text}</span>
                     </div>
@@ -606,44 +634,39 @@ const Home = () => {
 
             {/* Right content - Phone mockup */}
             <div className="relative">
-              {/* Phone container */}
               <div className="relative glass border-4 border-gray-700/40 rounded-[48px] p-4 md:p-6 shadow-2xl">
-                {/* Phone screen */}
                 <div className="bg-gray-950 rounded-[36px] overflow-hidden border-2 border-gray-800/50">
                   {/* Status bar */}
                   <div className="bg-gray-900/50 px-6 py-3 flex justify-between items-center text-xs text-gray-400">
                     <span>9:41</span>
                     <div className="flex gap-1">
-                      <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                      <div className="w-4 h-4 rounded-full bg-emerald-500"></div>
-                      <div className="w-4 h-4 rounded-full bg-purple-500"></div>
+                      <div className="w-4 h-4 rounded-full bg-blue-500" />
+                      <div className="w-4 h-4 rounded-full bg-emerald-500" />
+                      <div className="w-4 h-4 rounded-full bg-purple-500" />
                     </div>
                   </div>
 
                   {/* App content preview */}
                   <div className="p-6 space-y-4">
-                    {/* Portfolio value */}
                     <div className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-2xl p-4">
-                      <p className="text-gray-400 text-xs mb-1">Portfolio Value</p>
+                      <p className="text-gray-400 text-xs mb-1">Portfolio value</p>
                       <p className="text-2xl font-bold text-white">$127,450</p>
                       <p className="text-emerald-400 text-sm">+12.7%</p>
                     </div>
 
-                    {/* Mini chart bars */}
                     <div className="flex items-end justify-between h-24 gap-2">
                       {[60, 80, 50, 90, 70, 95, 75].map((height, i) => (
-                        <div 
+                        <div
                           key={i}
                           style={{ height: `${height}%` }}
                           className="flex-1 bg-gradient-to-t from-blue-600 to-purple-600 rounded-t-lg"
-                        ></div>
+                        />
                       ))}
                     </div>
 
-                    {/* Stock cards */}
                     <div className="space-y-2">
                       {['AAPL', 'NVDA'].map((symbol) => (
-                        <div 
+                        <div
                           key={symbol}
                           className="glass border border-gray-700/30 rounded-xl p-3 flex justify-between items-center"
                         >
@@ -661,20 +684,18 @@ const Home = () => {
                   </div>
                 </div>
 
-                {/* Home indicator */}
                 <div className="flex justify-center mt-4">
-                  <div className="w-24 h-1.5 bg-gray-600 rounded-full"></div>
+                  <div className="w-24 h-1.5 bg-gray-600 rounded-full" />
                 </div>
               </div>
 
-              {/* Floating badge */}
               <div className="absolute -top-4 -right-4 bg-gradient-to-br from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
                 iOS & Android
               </div>
             </div>
           </div>
         </motion.div>
-      </div>
+      </section>
     </div>
   );
 };
